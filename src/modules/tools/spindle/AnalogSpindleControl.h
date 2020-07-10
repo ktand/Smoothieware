@@ -33,6 +33,7 @@ class AnalogSpindleControl: public SpindleControl {
         int target_rpm;
         int min_rpm;
         int max_rpm;
+        int base_rpm;
 
         void turn_on(void);
         void turn_off(void);

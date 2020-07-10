@@ -16,6 +16,7 @@
 #include "PwmOut.h"
 
 #define spindle_checksum                    CHECKSUM("spindle")
+#define spindle_base_rpm_checksum           CHECKSUM("base_rpm")
 #define spindle_max_rpm_checksum            CHECKSUM("max_rpm")
 #define spindle_min_rpm_checksum            CHECKSUM("min_rpm")
 #define spindle_pwm_pin_checksum            CHECKSUM("pwm_pin")
@@ -29,6 +30,7 @@ void AnalogSpindleControl::on_module_loaded()
     target_rpm = 0;
     min_rpm = THEKERNEL->config->value(spindle_checksum, spindle_min_rpm_checksum)->by_default(100)->as_int();
     max_rpm = THEKERNEL->config->value(spindle_checksum, spindle_max_rpm_checksum)->by_default(5000)->as_int();
+    base_rpm = THEKERNEL->config->value(spindle_checksum, spindle_base_rpm_checksum)->by_default(0)->as_int();
 
     // Get the pin for hardware pwm
     {
@@ -96,7 +98,7 @@ void AnalogSpindleControl::set_speed(int rpm)
         target_rpm = rpm;
     }
     // calculate the duty cycle and update the PWM
-    update_pwm(1.0f / max_rpm * target_rpm);
+    update_pwm(1.0f / (max_rpm - base_rpm) * (target_rpm - base_rpm));
 
 }
 
