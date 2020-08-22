@@ -19,6 +19,7 @@
 #include "modules/tools/joystick/JoystickAxisPool.h"
 #include "modules/tools/temperatureswitch/TemperatureSwitch.h"
 #include "modules/tools/drillingcycles/Drillingcycles.h"
+#include "modules/tools/override/FeedOverride.h"
 #include "FilamentDetector.h"
 #include "MotorDriverControl.h"
 
@@ -194,7 +195,10 @@ void init() {
     JoystickAxisPool *jp = new JoystickAxisPool();
     jp->load_tools();
     delete jp;
-    #endif    
+    #endif
+    #ifndef NO_TOOLS_OVERRIDE
+    kernel->add_module( new FeedOverride() );
+    #endif   
     // Create and initialize USB stuff
     u.init();
 

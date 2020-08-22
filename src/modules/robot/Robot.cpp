@@ -116,6 +116,7 @@ Robot::Robot()
     memset(this->compensated_machine_position, 0, sizeof compensated_machine_position);
     this->arm_solution = NULL;
     seconds_per_minute = 60.0F;
+    this->feed_override_factor = 1.0F;
     this->clearToolOffset();
     this->compensationTransform = nullptr;
     this->get_e_scale_fnc= nullptr;
@@ -567,7 +568,7 @@ void Robot::on_gcode_received(void *argument)
 
                     if(gcode->subcode == 2) {
                         // we also move
-                        delta_move(deltas, this->seek_rate / seconds_per_minute, 3);
+                        delta_move(deltas, this->seek_rate / get_seconds_per_minute(), 3);
                     }
                 }
                 break;
@@ -864,7 +865,7 @@ void Robot::on_gcode_received(void *argument)
 
                     seconds_per_minute = 6000.0F / factor;
                 } else {
-                    gcode->stream->printf("Speed factor at %6.2f %%\n", 6000.0F / seconds_per_minute);
+                    gcode->stream->printf("Speed factor at %6.2f %%\n", 6000.0F / get_seconds_per_minute());
                 }
                 break;
 
@@ -1106,11 +1107,11 @@ void Robot::process_move(Gcode *gcode, enum MOTION_MODE_T motion_mode)
         case NONE: break;
 
         case SEEK:
-            moved= this->append_line(gcode, target, this->seek_rate / seconds_per_minute, delta_e );
+            moved= this->append_line(gcode, target, this->seek_rate / get_seconds_per_minute(), delta_e );
             break;
 
         case LINEAR:
-            moved= this->append_line(gcode, target, this->feed_rate / seconds_per_minute, delta_e );
+            moved= this->append_line(gcode, target, this->feed_rate / get_seconds_per_minute(), delta_e );
             break;
 
         case CW_ARC:
@@ -1534,7 +1535,7 @@ bool Robot::append_line(Gcode *gcode, const float target[], float rate_mm_s, flo
 // TODO does not support any E parameters so cannot be used for 3D printing.
 bool Robot::append_arc(Gcode * gcode, const float target[], const float offset[], float radius, bool is_clockwise )
 {
-    float rate_mm_s= this->feed_rate / seconds_per_minute;
+    float rate_mm_s= this->feed_rate / get_seconds_per_minute();
     // catch negative or zero feed rates and return the same error as GRBL does
     if(rate_mm_s <= 0.0F) {
         gcode->is_error= true;

@@ -37,7 +37,7 @@ class Robot : public Module {
         void reset_axis_position(float x, float y, float z);
         void reset_actuator_position(const ActuatorCoordinates &ac);
         void reset_position_from_current_actuator_position();
-        float get_seconds_per_minute() const { return seconds_per_minute; }
+        float get_seconds_per_minute() const { return seconds_per_minute / feed_override_factor; }
         float get_z_maxfeedrate() const { return this->max_speeds[Z_AXIS]; }
         float get_default_acceleration() const { return default_acceleration; }
         void setToolOffset(const float offset[N_PRIMARY_AXIS]);
@@ -61,6 +61,7 @@ class Robot : public Module {
         bool delta_move(const float delta[], float rate_mm_s, uint8_t naxis);
         uint8_t register_motor(StepperMotor*);
         uint8_t get_number_registered_motors() const {return n_motors; }
+        void set_feed_override_factor(float factor) { this->feed_override_factor = factor;}
 
         BaseSolution* arm_solution;                           // Selected Arm solution ( millimeters to step calculation )
 
@@ -139,6 +140,7 @@ class Robot : public Module {
         float seconds_per_minute;                            // for realtime speed change
         float default_acceleration;                          // the defualt accleration if not set for each axis
         float s_value;                                       // modal S value
+        float feed_override_factor;                          // feed override percentage (1 = 100%)
 
         // Number of arc generation iterations by small angle approximation before exact arc trajectory
         // correction. This parameter may be decreased if there are issues with the accuracy of the arc
