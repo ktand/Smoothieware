@@ -18,6 +18,7 @@
 #include "modules/tools/switch/SwitchPool.h"
 #include "modules/tools/temperatureswitch/TemperatureSwitch.h"
 #include "modules/tools/drillingcycles/Drillingcycles.h"
+#include "modules/tools/digitaljogger/DigitalJogger.h"
 #include "FilamentDetector.h"
 #include "MotorDriverControl.h"
 
@@ -188,6 +189,9 @@ void init() {
     #endif
     #ifndef NO_UTILS_MOTORDRIVERCONTROL
     kernel->add_module( new MotorDriverControl(0) );
+    #endif
+    #ifndef NO_TOOLS_DIGITALJOGGER
+    kernel->add_module( new(AHB0) DigitalJogger() );
     #endif
     // Create and initialize USB stuff
     u.init();

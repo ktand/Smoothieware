@@ -1,0 +1,20 @@
+{
+    "configurations": [
+        {
+            "name": "Smoothieware",
+            "includePath": [
+                "${workspaceFolder}/**"
+            ],
+            "defines": [
+                "_DEBUG",
+                "UNICODE",
+                "_UNICODE"
+            ],
+            "compilerPath": "C:\\Users\\karl\\Github\\Smoothieware\\gcc-arm-none-eabi\\bin\\arm-none-eabi-g++.exe",
+            "cStandard": "c11",
+            "cppStandard": "c++17",
+            "intelliSenseMode": "gcc-arm"
+        }
+    ],
+    "version": 4
+}
